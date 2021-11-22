@@ -4,18 +4,10 @@
 
 int interview(const std::vector<int>& interviewees)
 {
-    const int ignore_index = interviewees.size() / exp(1);
-    int best_candidate = 0;
-    int i = 0;
-    for (; i < ignore_index; ++i) {
-        if (interviewees[i] > best_candidate) {
-            best_candidate = interviewees[i];
-        }
-    }
-    for (; i < interviewees.size(); ++i) {
-        if (interviewees[i] > best_candidate) {
-            return interviewees[i];
-        }
-    }
-    return interviewees.back();
+    auto reject_until = interviewees.begin() + interviewees.size() / exp(1);
+    return *std::find_if(reject_until,
+                         interviewees.end() - 1,
+                         [best_so_far = *std::max_element(interviewees.begin(), reject_until)] (int candidate) {
+                             return candidate > best_so_far;
+                         });
 }
